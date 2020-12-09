@@ -1,4 +1,21 @@
-<?php require_once('init.php');?>
+<?php 
+require_once('init.php');
+
+// залогиненный пользователь, если такой есть
+$current_user = new User;
+
+// пользователь для профиля
+$user = new User(Input::get('id'));
+$user = $user->data();
+
+if (!$current_user->isLoggedIn()) {
+  $nav_title = 'Войти';
+  $nav_href = 'login.php';
+} else {
+  $nav_title = 'Выйти';
+  $nav_href = 'logout.php';
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,13 +39,16 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="#">Главная</a>
+            <a class="nav-link" href="index.php">Главная</a>
           </li>
         </ul>
 
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a href="#" class="nav-link">Войти</a>
+
+            <!-- "Войти" для незалогиненного пользователя, "Выйти" для залогиненного -->
+            <a href="<?php echo $nav_href;?>" class="nav-link"><?php echo $nav_title;?></a>
+            
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link">Регистрация</a>
@@ -51,10 +71,10 @@
 
            <tbody>
              <tr>
-               <td>2</td>
-               <td>Джон</td>
-               <td>25/02/2025</td>
-               <td>Привет! Я новый пользователь вашего проекта, хочу перейти на уровень 3!</td>
+               <td><?php echo $user->id;?></td>
+               <td><?php echo $user->username;?></td>
+               <td><?php echo date('d/m/Y', strtotime($user->registration_date));?></td>
+               <td><?php echo $user->status;?></td>
              </tr>
            </tbody>
          </table>

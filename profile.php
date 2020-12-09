@@ -80,6 +80,8 @@ if (Input::exists()) {
      <div class="row">
        <div class="col-md-8">
 
+          <!-- Чтобы данные в форме менялись сразу после изменения -->
+          <?php $user = new User;?>
          <h1>Профиль пользователя - <?php echo $user->data()->username;?></h1>
 
 
@@ -104,8 +106,6 @@ if (Input::exists()) {
            <li><a href="changepassword.php">Изменить пароль</a></li>
          </ul>
 
-          <!-- Чтобы данные в форме менялись сразу после изменения -->
-          <?php $user = new User;?>
 
          <form action="" class="form" method="post">
            <div class="form-group">

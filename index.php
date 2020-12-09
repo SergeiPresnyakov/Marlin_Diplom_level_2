@@ -1,6 +1,18 @@
 <?php 
 require_once('init.php');
 $allUsers = Database::getInstance()->query('SELECT * FROM users')->results();
+
+// залогиненный пользователь, если такой есть
+$current_user = new User;
+
+if (!$current_user->isLoggedIn()) {
+  $nav_title = 'Войти';
+  $nav_href = 'login.php';
+} else {
+  $nav_title = 'Выйти';
+  $nav_href = 'logout.php';
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +44,10 @@ $allUsers = Database::getInstance()->query('SELECT * FROM users')->results();
 
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a href="login.php" class="nav-link">Войти</a>
+
+            <!-- "Войти" для незалогиненного пользователя, и "Выйти" для залогиненного -->
+            <a href="<?php echo $nav_href;?>" class="nav-link"><?php echo $nav_title?></a>
+
           </li>
           <li class="nav-item">
             <a href="register.php" class="nav-link">Регистрация</a>
