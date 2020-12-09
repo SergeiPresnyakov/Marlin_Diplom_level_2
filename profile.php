@@ -53,7 +53,7 @@ if (Input::exists()) {
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link" href="#">Главная</a>
+              <a class="nav-link" href="index.php">Главная</a>
             </li>
             <li class="nav-item">
 
@@ -103,6 +103,9 @@ if (Input::exists()) {
          <ul>
            <li><a href="changepassword.php">Изменить пароль</a></li>
          </ul>
+
+          <!-- Чтобы данные в форме менялись сразу после изменения -->
+          <?php $user = new User;?>
 
          <form action="" class="form" method="post">
            <div class="form-group">

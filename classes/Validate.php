@@ -56,6 +56,11 @@ class Validate
                             }
                         break;
 
+                        case 'correct_password':
+                            if (!password_verify($value, $rule_value)) {
+                                $this->addError("Wrong {$item}!");
+                            }
+                        break;
                     }
                 }
             }
