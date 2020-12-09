@@ -31,3 +31,14 @@ $GLOBALS['config'] = [
         'cookie_expiry' => 604800
     ]
 ];
+
+/* Если пользователь не залогинен, но у него есть куки, просто логиним его по id, который взяли из таблицы user_sessions */
+if (Cookie::exists(Config::get('cookie.cookie_name')) && !Session::exists(Config::get('session.user_session'))) {
+    $hash = Cookie::get(Config::get('cookie.cookie_name'));
+    $hashCheck = Database::getInstance()->get('user_sessions', ['hash', '=', $hash]);
+
+    if ($hashCheck->count()) {
+        $user = new User($hashCheck->first()->user_id);
+        $user->login();
+    }
+}

@@ -18,13 +18,15 @@ if (Input::exists()) {
 
     if ($validation->passed()) {
       $user = new User;
-      $remember = (Input::get('remember')) == 'on' ? true : false;
+      $remember = (Input::get('remember')) === 'on' ? true : false;
       $login = $user->login(Input::get('email'), Input::get('password'), $remember);
       if ($login) {
         Redirect::to('profile.php');
       } else {
         Session::flash('info', 'Wrong login or password');
       }
+    } else {
+      Session::flash('danger', 'Error. Please check your data.');
     }
   }
 }
@@ -50,26 +52,23 @@ if (Input::exists()) {
 
 
       <!-- ошибки валидации -->
-      <?php if (Input::exists()):?>
-        <?php if (isset($validation) && $validation->errors()):?>
+      <?php if (Session::flashExists('danger')):?>
         <div class="alert alert-danger">
+          <?php echo Session::flash('danger');?>
           <ul>
             <?php foreach ($validation->errors() as $error):?>
               <li><?php echo $error;?></li>
             <?php endforeach;?>
           </ul>
         </div>
-        <?php endif;?>
       <?php endif;?>
 
 
       <!-- неудачный логин -->
-      <?php if (Input::exists()):?>
-        <?php if (!$login):?>
-          <div class="alert alert-info">
-            <?php echo Session::flash('info');?>
-          </div>
-        <?php endif;?>
+      <?php if (Session::flashExists('info')):?>
+        <div class="alert alert-info">
+          <?php echo Session::flash('info');?>
+        </div>
       <?php endif;?>
 
 

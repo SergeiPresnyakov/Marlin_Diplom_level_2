@@ -73,7 +73,7 @@ $allUsers = Database::getInstance()->query('SELECT * FROM users')->results();
               <td><?php echo $user->id;?></td>
               <td><a href="user_profile.php?id=<?php echo $user->id;?>"><?php echo $user->username;?></a></td>
               <td><?php echo $user->email;?></td>
-              <td><?php echo $user->registration_date;?></td>
+              <td><?php echo date('d/m/Y', strtotime($user->registration_date));?></td>
             </tr>
           <?php endforeach;?>
 

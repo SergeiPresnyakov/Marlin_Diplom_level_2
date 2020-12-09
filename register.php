@@ -36,8 +36,7 @@ if (Input::exists()) {
             $user_successfully_created = $user->create([
               'username' => Input::get('username'),
               'email' => Input::get('email'),
-              'password' => password_hash(Input::get('password'), PASSWORD_DEFAULT),
-              'registration_date' => date('d/m/Y')
+              'password' => password_hash(Input::get('password'), PASSWORD_DEFAULT)
               ]);
 
             Session::flash('success', 'Register success!');

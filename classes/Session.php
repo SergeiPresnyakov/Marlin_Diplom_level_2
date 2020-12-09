@@ -34,4 +34,9 @@ class Session
             self::put($name, $string);
         }
     }
+
+    public static function flashExists($name)
+    {
+        return self::exists($name) && self::get($name) != '';
+    }
 }

@@ -37,12 +37,12 @@ class User
             if ($user) {
                 if (password_verify($password, $this->data()->password)) {
                     Session::put($this->session_name, $this->data()->id);
-                    
+
                     if ($remember) {
                         $hash = hash('sha256', uniqid());
                         $hashCheck = $this->db->get('user_sessions', ['user_id', '=', $this->data()->id]);
 
-                        if (!$hashCheck) {
+                        if (!$hashCheck->count()) {
                             $this->db->insert('user_sessions', [
                                 'user_id' => $this->data()->id,
                                 'hash' => $hash
