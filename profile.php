@@ -10,7 +10,8 @@ if (Input::exists()) {
     $validation = $validate->check($_POST, [
       'username' => [
         'required' => true,
-        'min' => 3
+        'min' => 2,
+        'max' => 50
       ],
       'status' => [
         'max' => 255
@@ -45,7 +46,7 @@ if (Input::exists()) {
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">User Management</a>
+        <a class="navbar-brand" href="profile.php">User Management</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>

@@ -1,5 +1,44 @@
+<?php
+require_once('../init.php');
+$current_user = new User;
 
-<?php require_once('init.php');?>
+if (!$current_user->hasPermissions('admin')) {
+  Redirect::to('../index.php');
+}
+
+$edited_user_id = Input::get('id');
+$edited_user = new User($edited_user_id);
+
+if (Input::exists()) {
+  if (Token::check(Input::get('token'))) {
+    $validate = new Validate();
+
+    $validation = $validate->check($_POST, [
+      'username' => [
+        'required' => true,
+        'min' => 3
+      ],
+      'status' => [
+        'max' => 255
+      ]
+    ]);
+
+    if ($validation->passed()) {
+
+      $result = $edited_user->update([
+        'username' => Input::get('username'),
+        'status' => Input::get('status')
+      ], $edited_user_id);
+
+      Session::flash('success', 'Profile successfully updated.');
+
+    } else {
+      Session::flash('danger', 'Error. Please check your data.');
+
+    }
+  }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,19 +62,19 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link" href="#">Главная</a>
+              <a class="nav-link" href="../index.php">Главная</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Управление пользователями</a>
+              <a class="nav-link" href="index.php">Управление пользователями</a>
             </li>
           </ul>
 
           <ul class="navbar-nav">
             <li class="nav-item">
               <li class="nav-item">
-                <a href="profile.html" class="nav-link">Профиль</a>
+                <a href="../profile.php" class="nav-link">Профиль</a>
               </li>
-              <a href="#" class="nav-link">Выйти</a>
+              <a href="../logout.php" class="nav-link">Выйти</a>
             </li>
           </ul>
         </div>
@@ -44,26 +83,40 @@
    <div class="container">
      <div class="row">
        <div class="col-md-8">
-         <h1>Профиль пользователя - Рахим</h1>
-         <div class="alert alert-success">Профиль обновлен</div>
+       <?php $edited_user = new User($edited_user_id);?>
+         <h1>Профиль пользователя - <?php echo $edited_user->data()->username;?></h1>
+
+
+         <?php if (Session::flashExists('success')):?>
+          <div class="alert alert-success"><?php echo Session::flash('success');?></div>
+         <?php endif;?>
          
-         <div class="alert alert-danger">
+
+         <?php if (Session::flashExists('danger')):?>
+          <div class="alert alert-danger">
+          <?php echo Session::flash('danger');?>
            <ul>
-             <li>Ошибка валидации</li>
+            <?php foreach ($validation->errors() as $error):?>
+             <li><?php echo $error;?></li>
+            <?php endforeach;?>
            </ul>
-         </div>
-         <form action="" class="form">
+          </div>
+         <?php endif;?>
+
+
+         <form action="" class="form" method="post">
            <div class="form-group">
              <label for="username">Имя</label>
-             <input type="text" id="username" class="form-control" value="Рахим">
+             <input type="text" id="username" name="username" class="form-control" value="<?php echo $edited_user->data()->username;?>">
            </div>
            <div class="form-group">
              <label for="status">Статус</label>
-             <input type="text" id="status" class="form-control" value="Разрабатываю новые проекты)">
+             <input type="text" id="status" name="status" class="form-control" value="<?php echo $edited_user->data()->status;?>">
            </div>
 
            <div class="form-group">
-             <button class="btn btn-warning">Обновить</button>
+            <input type="hidden" name="token" value="<?php echo Token::generate();?>">
+            <button class="btn btn-warning" type="submit">Обновить</button>
            </div>
          </form>
 

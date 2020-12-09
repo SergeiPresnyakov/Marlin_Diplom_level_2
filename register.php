@@ -10,7 +10,7 @@ if (Input::exists()) {
         'username' => [
             'required' => true,
             'min' => 2,
-            'max' => 15
+            'max' => 50
         ],
         'email' => [
             'required' => true,
@@ -33,14 +33,16 @@ if (Input::exists()) {
         if ($validation->passed()) {
             $user = new User;
             
-            $user_successfully_created = $user->create([
+            $user->create([
               'username' => Input::get('username'),
               'email' => Input::get('email'),
               'password' => password_hash(Input::get('password'), PASSWORD_DEFAULT)
               ]);
-
-            Session::flash('success', 'Register success!');
-            Redirect::to('profile.php');
+            
+            $user->login(Input::get('email'), Input::get('password'));
+            Redirect::to("profile.php?id={$user->data()->id}");
+        } else {
+          Session::flash('danger', 'Error. Please check your data.');
         }
     }
 }
@@ -66,25 +68,17 @@ if (Input::exists()) {
     	  <h1 class="h3 mb-3 font-weight-normal">Регистрация</h1>
 
         
-        <?php if (Input::exists()):?>
-          <?php if (isset($validation) && $validation->errors()):?>
-            <div class="alert alert-danger">
-              <ul>
-                <?php foreach ($validation->errors() as $error):?>
-                  <li><?php echo $error;?></li>
-                <?php endforeach;?>
-              </ul>
-            </div>
-          <?php endif;?>
-        <?php endif;?>
-            
-
-        <?php if ($user_successfully_created):?>
-          <div class="alert alert-success">
-            <?php echo Session::flash('success');?>
-          </div>
-        <?php endif;?>
-
+    <?php if (Session::flashExists('danger')):?>
+      <div class="alert alert-danger">
+        <?php echo Session::flash('danger');?>
+        <ul>
+          <?php foreach ($validation->errors() as $error):?>
+            <li><?php echo $error;?></li>
+          <?php endforeach;?>
+        </ul>
+      </div>
+    <?php endif;?>
+ 
 
     	  <div class="form-group">
           <input type="email" class="form-control" id="email" placeholder="Email" name="email">
